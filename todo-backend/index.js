@@ -76,7 +76,7 @@ const main = async () => {
     try {
         await sequelize.authenticate();
         console.log("Connection has been established successfully.");
-        // await sequelize.sync({ force: true });
+        await sequelize.sync({ force: true });
     } catch (error) {
         console.error("Unable to connect to the database:", error);
     }
@@ -98,8 +98,15 @@ app.get("/tasks", async (req, res) => {
 
 app.post("/task", async (req, res) => {
     const { title, description } = req.body;
-    const task = await Task.create({ "title": title, "description": description });
-    res.json(task.toJSON());
+    try {
+        const task = await Task.create({ "title": title, "description": description });
+        return res.json(task.toJSON());
+    } catch (error) {
+        console.log(error);
+        return res.status(500).end();
+    }
+
+
 });
 
 app.patch("/task/:id", async (req, res) => {
