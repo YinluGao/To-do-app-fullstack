@@ -6,31 +6,13 @@ const bodyParser = require('body-parser');
 require("dotenv").config();
 const { Sequelize, DataTypes } = require("sequelize");
 
-const sequelize = new Sequelize("Team7YL", "hyper", "Rox6kTdcxcRzPeEWB6Ff",
+const sequelize = new Sequelize(process.env.TEAM_NAME, process.env.USER_NAME, process.env.PASSWORD,
     {
         dialect: "postgres",
-        port: 5432,
-        host: "104.199.12.40",
+        port: process.env.PORT,
+        host: process.env.HOST,
     });
 
-
-// sequelize.authenticate().then(() => {
-//     console.log("connection successful");
-// }).catch((err) => { console.log("error connecting to database!") })
-
-
-// console.log("another task")
-
-let itemLists = [
-    {
-        title: "Breakfast",
-        description: "Milk ==== and Bacon Backend",
-    },
-    {
-        title: "Shopping lllhkb List",
-        description: "Dipper and backend"
-    }
-];
 // add cors
 const cors = require('cors');
 
@@ -45,16 +27,6 @@ app.get("/", (req, res) => {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-// receive new item as body and add it to database then send the whole items to frontEnd
-app.post("/newItem/", (req, res) => {
-    let newItem = req.body;
-    itemLists.push(newItem);
-    res.json(itemLists);
-});
-
-
-//test
 
 const Task = sequelize.define("Task", {
     id: {
@@ -83,11 +55,6 @@ const main = async () => {
 };
 
 main();
-//app.use(morgan("tiny"));
-
-//const port = 3000;
-
-//app.use(bodyParser.json());
 
 app.get("/tasks", async (req, res) => {
     const tasks = await Task.findAll();
@@ -112,7 +79,14 @@ app.post("/task", async (req, res) => {
 app.patch("/task/:id", async (req, res) => {
     const { completed } = req.body;
     const { id } = req.params;
-    await Task.update({ completed }, { where: { id } });
+    console.log("patch received body", id, completed)
+    await Task.update({ "description": completed }, { where: { id } });
+    res.end();
+});
+
+app.delete("/task/:id", async (req, res) => {
+    const { id } = req.params;
+    await Task.destroy({ where: { id: id } })
     res.end();
 });
 
