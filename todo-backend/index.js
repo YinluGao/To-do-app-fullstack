@@ -55,14 +55,23 @@ const main = async () => {
 };
 
 main();
+//get item
+app.get("/tasks", getItem);
 
-app.get("/tasks", async (req, res) => {
+const getItem = async (req, res) => {
+    //auth
+    if (req.headers["Authorization"] != "banana") {
+        return res.status(401).end();
+
+    };
+
     const tasks = await Task.findAll();
     res.json(tasks.map((t) => t.toJSON()));
 
     console.log(tasks);
-});
+}
 
+//add and create item
 app.post("/task", async (req, res) => {
     const { title, description } = req.body;
     try {
@@ -75,15 +84,21 @@ app.post("/task", async (req, res) => {
 
 
 });
-
+// Update items
 app.patch("/task/:id", async (req, res) => {
-    const { completed } = req.body;
-    const { id } = req.params;
-    console.log("patch received body", id, completed)
-    await Task.update({ "description": completed }, { where: { id } });
-    res.end();
-});
+    try {
+        const completed = req.body;
+        const { id } = req.params;
+        console.log("patch received body", id, completed)
+        await Task.update(completed, { where: { id } });
+        res.end();
 
+    } catch (error) {
+        console.log(error);
+        return res.status(500).end();
+    }
+});
+//Delete items
 app.delete("/task/:id", async (req, res) => {
     const { id } = req.params;
     await Task.destroy({ where: { id: id } })

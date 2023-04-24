@@ -53,7 +53,7 @@ function App() {
       },
       body: JSON.stringify(completed)
     });
-    //getItems();
+    getItems();
   }
 
   return (

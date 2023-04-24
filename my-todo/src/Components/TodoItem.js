@@ -16,7 +16,7 @@ const TodoItem = ({ item, deleteItem, updateItem }) => {
     const updateItemInTodo = () => {
         console.log("updateItem");
         let id = item.id;
-        let completed = { description }
+        let completed = { title, description }
         console.log(id, completed);
         updateItem(id, completed);
         setStatus("");
