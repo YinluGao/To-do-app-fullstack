@@ -60,8 +60,8 @@ app.get("/tasks", getItem);
 
 const getItem = async (req, res) => {
     //auth
-    if (req.headers["Authorization"] != "banana") {
-        return res.status(401).end();
+   // if (req.headers["Authorization"] != "banana") {
+     //   return res.status(401).end();
 
     };
 
