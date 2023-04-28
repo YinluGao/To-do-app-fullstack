@@ -63,7 +63,7 @@ const getItem = async (req, res) => {
    // if (req.headers["Authorization"] != "banana") {
      //   return res.status(401).end();
 
-    };
+   // };
 
     const tasks = await Task.findAll();
     res.json(tasks.map((t) => t.toJSON()));
